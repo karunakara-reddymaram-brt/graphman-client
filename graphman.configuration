@@ -15,7 +15,7 @@
             "credential": "default",
             "rejectUnauthorized": true,
             "passphrase": "7layer",
-            "allowMutations": false,
+            "allowMutations": false
         }
     },
 
@@ -26,6 +26,6 @@
         "policyCodeFormat": "xml",
         "keyFormat": "p12",
         "caFilename": null,
-        "extensions": ["pre-request", "post-export", "pre-import", "http-proxy-agent", "https-proxy-agent", "socks-proxy-agent"]
+        "extensions": ["pre-request", "post-export", "pre-import", "post-revise", "http-proxy-agent", "https-proxy-agent", "socks-proxy-agent"]
     }
 }
