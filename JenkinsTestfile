@@ -97,14 +97,15 @@ pipeline {
                     if(!cfg.proxies)cfg.proxies={};
 
                     // HTTP Proxy
-                    if(process.env.HTTP_PROXY_ADDRESS && process.env.HTTP_PROXY_ADDRESS.trim()!==""){
+                    if(process.env.HTTP_PROXY_HOST && process.env.HTTP_PROXY_HOST.trim()!==""){
                         cfg.credentials.proxyCredentials={};
                         cfg.credentials.proxyCredentials.username=process.env.HTTP_PROXY_USER||"";
                         cfg.credentials.proxyCredentials.password=process.env.HTTP_PROXY_PASS||"";
 
                         cfg.proxies.default={
                             agentType: process.env.HTTP_AGENT_TYPE || "http",
-                            address: process.env.HTTP_PROXY_ADDRESS.trim(),
+                            host: process.env.HTTP_PROXY_HOST.trim(),
+                            port: process.env.HTTP_PROXY_PORT,
                             credential: "proxyCredentials",
                             options: {
                                 timeout: 30000,
@@ -116,10 +117,11 @@ pipeline {
                     }
 
                     // SOCKS Proxy
-                    if(process.env.SOCKS_PROXY_ADDRESS && process.env.SOCKS_PROXY_ADDRESS.trim()!==""){
+                    if(process.env.SOCKS_PROXY_HOST && process.env.SOCKS_PROXY_HOST.trim()!==""){
                         cfg.proxies.socksproxy={
                             agentType: process.env.SOCKS_AGENT_TYPE || "socks",
-                            address: process.env.SOCKS_PROXY_ADDRESS.trim(),
+                            host: process.env.SOCKS_PROXY_HOST.trim(),
+                            port: process.env.SOCKS_PROXY_PORT,
                             credential: null,
                             options: {
                                 timeout: 30000,
@@ -195,13 +197,15 @@ pipeline {
                     env.TARGET_GW_PASS = params.VAR_target_gateway_password ?: ''
 
                     // Map Proxy Variables
-                    env.HTTP_AGENT_TYPE = params.VAR_http_agent_type ?: 'httpproxy'
-                    env.HTTP_PROXY_ADDRESS = (params.VAR_http_proxy_address ?: '').trim()
+                    env.HTTP_AGENT_TYPE = params.VAR_http_agent_type ?: 'http'
+                    env.HTTP_PROXY_HOST = (params.VAR_http_proxy_host ?: '').trim()
+                    env.HTTP_PROXY_PORT = params.VAR_http_proxy_port ? : '3128'
                     env.HTTP_PROXY_USER = params.VAR_http_proxy_username ?: 'root'
                     env.HTTP_PROXY_PASS = params.VAR_http_password ?: ''
 
-                    env.SOCKS_AGENT_TYPE = params.VAR_socks_agent_type ?: 'socksproxy'
+                    env.SOCKS_AGENT_TYPE = params.VAR_socks_agent_type ?: 'socks'
                     env.SOCKS_PROXY_ADDRESS = (params.VAR_socks_proxy_address ?: '').trim()
+                    env.SOCKS_PROXY_PORT = params.VAR_socks_proxy_port ? : '1080'
                     env.SOCKS_PROXY_USER = params.VAR_socks_proxy_username ?: 'root'
                     env.SOCKS_PROXY_PASS = params.VAR_socks_password ?: ''
 

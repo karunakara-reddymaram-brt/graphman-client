@@ -1,4 +1,5 @@
 // Copyright (c) 2026 Broadcom Inc. and its subsidiaries. All Rights Reserved.
+const utils = require("./graphman-utils");
 module.exports = {
     /**
      * * Extension to provide HTTP proxy agent
@@ -13,7 +14,7 @@ module.exports = {
 
         if(input.agentType === "socks") {
            return createSocksProxyAgent(input, context);
-       } else {
+        } else {
            return createHttpProxyAgent(input, context);
        }
     }
@@ -25,7 +26,7 @@ function createSocksProxyAgent(input, context) {
 
     try {
         const { SocksProxyAgent } = require("socks-proxy-agent");
-        agent = new SocksProxyAgent(proxyConfig.url || new URL(input.address), proxyConfig);
+        agent = new SocksProxyAgent(proxyConfig.url || new URL(input.host + ":" + input.port), proxyConfig);
     } catch (e) {
       throw "failed to configure socks proxy agent" + e.message;
     }
@@ -36,8 +37,10 @@ function createHttpProxyAgent(input, context) {
     let agent = null;
     const isHttps = context.gateway["address"].startsWith('https://');
     const proxyConfig = createProxyConfig(input);
-    const proxyUrlLower = input.address.toLowerCase();
+    const proxyUrlLower = input.host.toLowerCase();
     const isProxyHttps = proxyUrlLower.startsWith('https://');
+
+    const completeUrl = input.host + ":" + input.port;
 
     if (isProxyHttps) {
         // If proxy URL uses https://, ensure TLS options are configured if needed
@@ -56,10 +59,10 @@ function createHttpProxyAgent(input, context) {
 
         if (isHttps) {
             const { HttpsProxyAgent } = require("https-proxy-agent")
-            agent = new HttpsProxyAgent(input.address, proxyConfig);
+            agent = new HttpsProxyAgent(completeUrl, proxyConfig);
         } else {
             const { HttpProxyAgent } = require("http-proxy-agent")
-            agent = new HttpProxyAgent(input.address, proxyConfig);
+            agent = new HttpProxyAgent(completeUrl, proxyConfig);
         }
 
     } catch (e) {
@@ -76,7 +79,7 @@ function createProxyConfig(obj) {
 
     if (cred) {
         if (obj.agentType === "socks") {
-            const url = new URL(obj.address);
+            const url = new URL(obj.host);
             url.username = cred.username;
             url.password = cred.password;
 
