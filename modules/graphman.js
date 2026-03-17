@@ -403,6 +403,26 @@ function makeCredentials(credentials) {
 }
 
 function makeProxies(proxies) {
+    //populate default proxy if no proxy profiles are defined
+    if (!Object.keys(proxies).length) {
+        proxies['default'] = {
+            "agentType": "http",
+            "host": "localhost",
+            "port": 3128,
+            "credential": null,
+            "options" : {
+                "timeout": 30000,
+                "keepAlive": true,
+                "maxSockets": 10,
+                "rejectUnauthorized": false
+            }
+        };
+    }
+
+    // define entry for default proxy for error reporting
+    if (!proxies['default']) {
+        proxies['default'] = {};
+    }
     // No hard default; just ensure each proxy knows its name if useful
     Object.entries(proxies).forEach(([key, item]) => item['name'] = key);
     return proxies;

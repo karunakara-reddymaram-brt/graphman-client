@@ -11,7 +11,7 @@ module.exports = {
      */
     apply: function (input, context) {
 
-        if(input.agentType === "socks") {
+        if(input.agentType?.startsWith("socks")) {
            return createSocksProxyAgent(input, context);
         } else {
            return createHttpProxyAgent(input, context);
@@ -59,7 +59,7 @@ function createHttpProxyAgent(input, context) {
             agent = new HttpsProxyAgent(proxyConfig.url, proxyConfig);
         } else {
             const { HttpProxyAgent } = require("http-proxy-agent")
-            agent = new HttpProxyAgent(proxyConfig.url, proxyConfig);
+            agent = new HttpProxyAgent(proxyConfig, proxyConfig);
         }
 
     } catch (e) {
@@ -72,34 +72,17 @@ function createHttpProxyAgent(input, context) {
 function createProxyConfig(obj) {
     const proxy = {};
     const cred = obj.credentialRef;
-    let auth;
+    const url = new URL(`${obj.agentType}://${obj.host}:${obj.port}`);
 
-    if (obj.agentType === "socks") {
-        const url = new URL(obj.host);
-        if (cred) {
-            url.username = cred.username;
-            url.password = cred.password;
-        }
-        url.port = obj.port;
-        proxy.url = url;
-    } else {
-        if (cred) {
-            auth = `Basic ${Buffer.from(`${cred.username}:${cred.password}`).toString('base64')}`;
-        }
-        proxy.url = obj.host + ":" + obj.port;
+    if (cred) {
+        url.username = cred.username;
+        url.password = cred.password;
     }
 
     Object.keys(obj.options).forEach(key => {
         proxy[key] = obj.options[key];
     });
 
-    if (!proxy.headers) {
-        proxy.headers = {};
-    }
-
-    if (auth) {
-        proxy.headers["Proxy-Authorization"] = auth;
-    }
-
+    proxy.url = url;
     return proxy;
 }
