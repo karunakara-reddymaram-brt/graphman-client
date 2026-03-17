@@ -150,7 +150,7 @@ describe("explode command", () => {
         graphman("explode", "--input", bundle, "--output", explodedDir, "--options.level", "0");
 
         const servicesDir = path.join(explodedDir, "services");
-        const service = JSON.parse(fs.readFileSync(path.join(servicesDir, "Service1.service.json"), 'utf-8'));
+        const service = JSON.parse(fs.readFileSync(path.join(servicesDir, "Service1-[+service1].service.json"), 'utf-8'));
         
         // At level 0, policy XML should remain inline
         expect(service.policy.xml).toBe("<policy>test</policy>");
@@ -232,7 +232,7 @@ describe("explode command", () => {
         expect(fs.existsSync(path.join(explodedDir, "tree", "fragments"))).toBe(true);
         const fragmentsDir = path.join(explodedDir, "tree", "fragments");
         const files = fs.readdirSync(fragmentsDir);
-        expect(files).toContain("Fragment1.policy-fragment.json");
+        expect(files).toContain("Fragment1.policy.json");
     });
 });
 
