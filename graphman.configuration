@@ -11,7 +11,7 @@
     "proxies": {
         "default": {
             "agentType": "http",
-            "host": "http://localhost",
+            "host": "localhost",
             "port": 3128
             "credential": null,
             "options" : {
