@@ -72,6 +72,7 @@ function createHttpProxyAgent(input, context) {
 function createProxyConfig(obj) {
     const proxy = {};
     const cred = obj.credentialRef;
+    let auth;
 
     if (obj.agentType === "socks") {
         const url = new URL(obj.host);
@@ -83,7 +84,7 @@ function createProxyConfig(obj) {
         proxy.url = url;
     } else {
         if (cred) {
-            proxy.headers["Proxy-Authorization"] = `Basic ${Buffer.from(`${cred.username}:${cred.password}`).toString('base64')}`;
+            auth = `Basic ${Buffer.from(`${cred.username}:${cred.password}`).toString('base64')}`;
         }
         proxy.url = obj.host + ":" + obj.port;
     }
@@ -94,6 +95,10 @@ function createProxyConfig(obj) {
 
     if (!proxy.headers) {
         proxy.headers = {};
+    }
+
+    if (auth) {
+        proxy.headers["Proxy-Authorization"] = auth;
     }
 
     return proxy;
