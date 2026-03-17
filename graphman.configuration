@@ -12,7 +12,7 @@
         "default": {
             "agentType": "http",
             "host": "localhost",
-            "port": 3128
+            "port": 3128,
             "credential": null,
             "options" : {
                 "timeout": 30000,
