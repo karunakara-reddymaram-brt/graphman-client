@@ -1,5 +1,4 @@
 // Copyright (c) 2026 Broadcom Inc. and its subsidiaries. All Rights Reserved.
-const utils = require("./graphman-utils");
 module.exports = {
     /**
      * * Extension to provide HTTP proxy agent
@@ -26,7 +25,7 @@ function createSocksProxyAgent(input, context) {
 
     try {
         const { SocksProxyAgent } = require("socks-proxy-agent");
-        agent = new SocksProxyAgent(proxyConfig.url || new URL(input.host + ":" + input.port), proxyConfig);
+        agent = new SocksProxyAgent(proxyConfig.url , proxyConfig);
     } catch (e) {
       throw "failed to configure socks proxy agent" + e.message;
     }
@@ -39,8 +38,6 @@ function createHttpProxyAgent(input, context) {
     const proxyConfig = createProxyConfig(input);
     const proxyUrlLower = input.host.toLowerCase();
     const isProxyHttps = proxyUrlLower.startsWith('https://');
-
-    const completeUrl = input.host + ":" + input.port;
 
     if (isProxyHttps) {
         // If proxy URL uses https://, ensure TLS options are configured if needed
@@ -59,10 +56,10 @@ function createHttpProxyAgent(input, context) {
 
         if (isHttps) {
             const { HttpsProxyAgent } = require("https-proxy-agent")
-            agent = new HttpsProxyAgent(completeUrl, proxyConfig);
+            agent = new HttpsProxyAgent(proxyConfig.url, proxyConfig);
         } else {
             const { HttpProxyAgent } = require("http-proxy-agent")
-            agent = new HttpProxyAgent(completeUrl, proxyConfig);
+            agent = new HttpProxyAgent(proxyConfig.url, proxyConfig);
         }
 
     } catch (e) {
@@ -75,18 +72,20 @@ function createHttpProxyAgent(input, context) {
 function createProxyConfig(obj) {
     const proxy = {};
     const cred = obj.credentialRef;
-    let auth;
 
-    if (cred) {
-        if (obj.agentType === "socks") {
-            const url = new URL(obj.host);
+    if (obj.agentType === "socks") {
+        const url = new URL(obj.host);
+        if (cred) {
             url.username = cred.username;
             url.password = cred.password;
-
-            proxy.url = url;
-        } else {
-            auth = `Basic ${Buffer.from(`${cred.username}:${cred.password}`).toString('base64')}`;
         }
+        url.port = obj.port;
+        proxy.url = url;
+    } else {
+        if (cred) {
+            proxy.headers["Proxy-Authorization"] = `Basic ${Buffer.from(`${cred.username}:${cred.password}`).toString('base64')}`;
+        }
+        proxy.url = obj.host + ":" + obj.port;
     }
 
     Object.keys(obj.options).forEach(key => {
@@ -95,10 +94,6 @@ function createProxyConfig(obj) {
 
     if (!proxy.headers) {
         proxy.headers = {};
-    }
-
-    if (auth) {
-        proxy.headers["Proxy-Authorization"] = auth;
     }
 
     return proxy;

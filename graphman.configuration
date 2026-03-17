@@ -11,7 +11,8 @@
     "proxies": {
         "default": {
             "agentType": "http",
-            "address": "http://localhost:3128",
+            "host": "http://localhost",
+            "port": 3128
             "credential": null,
             "options" : {
                 "timeout": 30000,
