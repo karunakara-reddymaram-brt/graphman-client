@@ -201,13 +201,13 @@ pipeline {
                     // Map Proxy Variables
                     env.HTTP_AGENT_TYPE = params.VAR_http_agent_type ?: 'http'
                     env.HTTP_PROXY_HOST = (params.VAR_http_proxy_host ?: '').trim()
-                    env.HTTP_PROXY_PORT = params.VAR_http_proxy_port ? : '3128'
+                    env.HTTP_PROXY_PORT = params.VAR_http_proxy_port ?: '3128'
                     env.HTTP_PROXY_USER = params.VAR_http_proxy_username ?: 'root'
                     env.HTTP_PROXY_PASS = params.VAR_http_password ?: ''
 
                     env.SOCKS_AGENT_TYPE = params.VAR_socks_agent_type ?: 'socks'
                     env.SOCKS_PROXY_HOST = (params.VAR_socks_proxy_host ?: '').trim()
-                    env.SOCKS_PROXY_PORT = params.VAR_socks_proxy_port ? : '1080'
+                    env.SOCKS_PROXY_PORT = params.VAR_socks_proxy_port ?: '1080'
                     env.SOCKS_PROXY_USER = params.VAR_socks_proxy_username ?: 'root'
                     env.SOCKS_PROXY_PASS = params.VAR_socks_password ?: ''
 
