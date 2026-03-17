@@ -42,14 +42,16 @@ pipeline {
         password(name: 'VAR_target_gateway_passphrase', defaultValue: '7layer', description: 'Optional: Target gateway passphrase (e.g. for admin key)')
 
         // http Proxy Server
-        string(name: 'VAR_http_agent_type', defaultValue: 'httpproxy', description: 'default http proxy type')
-        string(name: 'VAR_http_proxy_address', defaultValue: 'http://localhost:8080', description: 'default http proxy server address')
+        string(name: 'VAR_http_agent_type', defaultValue: 'http', description: 'default http proxy type')
+        string(name: 'VAR_http_proxy_host', defaultValue: 'localhost', description: 'default http proxy server address')
+        string(name: 'VAR_http_proxy_port', defaultValue: '3128', description: 'default http proxy port')
         string(name: 'VAR_http_proxy_username', defaultValue: 'root', description: 'http proxy username')
         password(name: 'VAR_http_password', defaultValue: '7layer', description: 'http proxy password')
 
         // socks Proxy Server
-        string(name: 'VAR_socks_agent_type', defaultValue: 'socksproxy', description: 'default socks proxy type')
-        string(name: 'VAR_socks_proxy_address', defaultValue: 'socks5://localhost:8080', description: 'default socks proxy server address')
+        string(name: 'VAR_socks_agent_type', defaultValue: 'socks', description: 'default socks proxy type')
+        string(name: 'VAR_socks_proxy_host', defaultValue: 'localhost', description: 'default socks proxy server address')
+        string(name: 'VAR_socks_proxy_port', defaultValue: '1080', description: 'default socks proxy port')
         string(name: 'VAR_socks_proxy_username', defaultValue: 'root', description: 'socks proxy username')
         password(name: 'VAR_socks_password', defaultValue: '7layer', description: 'socks proxy password')
     }
