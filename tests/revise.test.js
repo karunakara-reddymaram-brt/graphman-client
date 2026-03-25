@@ -211,8 +211,8 @@ describe("revise command", () => {
 
         const output = graphman("revise", "--input", bundle);
 
-        expect(output.policies).toHaveLength(1);
-        expect(output.policyFragments).toHaveLength(1);
+        expect(output.policies).toHaveLength(2);
+        expect(output.policies[0].policyType).toEqual("FRAGMENT");
     });
 
     test("should revise bundle without normalize option", () => {
