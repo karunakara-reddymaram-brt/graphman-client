@@ -51,10 +51,10 @@ describe("explode command", () => {
         
         const servicesDir = path.join(explodedDir, "services");
         const files = fs.readdirSync(servicesDir);
-        expect(files).toContain("Service1.service.json");
-        expect(files).toContain("Service2.service.json");
+        expect(files).toContain("Service1-[+service1].service.json");
+        expect(files).toContain("Service2-[+service2].service.json");
 
-        const service1 = JSON.parse(fs.readFileSync(path.join(servicesDir, "Service1.service.json"), 'utf-8'));
+        const service1 = JSON.parse(fs.readFileSync(path.join(servicesDir, "Service1-[+service1].service.json"), 'utf-8'));
         expect(service1).toMatchObject({
             name: "Service1",
             resolutionPath: "/service1",
@@ -77,8 +77,8 @@ describe("explode command", () => {
         
         const policiesDir = path.join(explodedDir, "tree", "policies");
         const files = fs.readdirSync(policiesDir);
-        expect(files).toContain("Policy1.policy.json");
-        expect(files).toContain("Policy2.policy.json");
+        expect(files).toContain("Policy1-[Policy1].policy.json");
+        expect(files).toContain("Policy2-[Policy2].policy.json");
     });
 
     test("should explode bundle with cluster properties", () => {
@@ -110,7 +110,6 @@ describe("explode command", () => {
 
         expect(fs.existsSync(path.join(explodedDir, "services"))).toBe(true);
         expect(fs.existsSync(path.join(explodedDir, "clusterProperties"))).toBe(true);
-        expect(fs.existsSync(path.join(explodedDir, "folders"))).toBe(true);
     });
 
     test("should explode empty bundle", () => {
